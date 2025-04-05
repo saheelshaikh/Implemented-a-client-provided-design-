@@ -24,7 +24,7 @@ Bootstrap carousel integrated to showcase images
 Minimalistic footer with branding
 
 📸 Screenshots:
-You can upload screenshots of your project and link them here using Markdown.
+
 
 ![WhatsApp Image 2025-01-30 at 15 16 35_620286e4](https://github.com/user-attachments/assets/2b27ec9b-427e-4ca0-89c8-1686536f52db)
 
