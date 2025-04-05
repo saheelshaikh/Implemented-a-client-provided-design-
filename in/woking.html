@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        .text {
+            font-family: 'Brush Script MT', cursive;
+            text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.8);
+        }
+        
+        .background {
+            filter: blur(5px);
+        }
+        
+        .circle {
+            background: radial-gradient(circle, #c86dd7, #3023ae);
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg bg-light">
+        <div class="container-fluid px-4">
+            <div class="navbar-brand">
+                <img src="logo.jpg" alt="logo" class="img-fluid" style="width: 150px; height: 50px;">
+            </div>
+            <ul class="navbar-nav gap-4">
+                <li class="nav-item"><a class="nav-link text-secondary" href="#">Home</a></li>
+                <li class="nav-item"><a class="nav-link text-secondary" href="#">Archive</a></li>
+                <li class="nav-item"><a class="nav-link text-secondary" href="#">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+   
+    <div class="container-fluid px-5">
+        <div class="position-relative overflow-hidden rounded-top" style="height: 300px;">
+            <div class="background position-absolute top-0 start-0 w-100 h-100" style="background: url(img2.jpg) no-repeat center center/cover;"></div>
+            <div class="position-absolute top-0 start-0 w-100 h-100 bg-dark bg-opacity-50"></div>
+            <div class="position-absolute w-100 h-100 d-flex align-items-center justify-content-center gap-3">
+                <div class="text text-white fs-1 fw-bold">See Portfolio</div>
+                <div class="circle rounded-circle d-flex align-items-center justify-content-center" style="width: 80px; height: 80px;"></div>
+            </div>
+        </div>
+        
+        <hr class="my-4">
+        
+        <div id="carousels-container">
+            <!-- Carousels will be dynamically inserted here -->
+        </div>
+    </div>
+    
+    <footer class="text-center mt-3">
+        <img src="logo.jpg" alt="logo" class="img-fluid" style="width: 200px; height: 100px;">
+    </footer>
+
+    <script>
+        // Carousel data array
+        const carouselData = [
+            {
+                id: 1,
+                title: "Project One",
+                description: "Description of the first project",
+                images: ["img.jpg", "img2.jpg", "see.jpg"],
+                link:"https://www.google.com"
+            },
+            {
+                id: 2,
+                title: "Project Two",
+                description: "Description of the second project",
+                images: ["img.jpg", "img2.jpg", "see.jpg"],
+                 link:"https://www.google.com"
+            },
+            {
+                id: 3,
+                title: "Project Three",
+                description: "Description of the third project",
+                images: ["img.jpg", "img2.jpg", "see.jpg"],
+                 link:"https://www.google.com"
+            },
+            {
+                id: 4,
+                title: "Project Four",
+                description: "Description of the fourth project",
+                images: ["img.jpg", "img2.jpg", "see.jpg"], 
+                 link:"https://www.google.com"
+            }   
+        ];
+
+        // Store carousel instances
+        const carouselInstances = new Map();
+
+        // Function to generate carousel HTML
+        function generateCarouselHTML(data) {
+            const paddedId = String(data.id).padStart(2, '0');
+            return `
+                <div class="d-flex justify-content-between align-items-center p-3 bg-secondary bg-opacity-25 rounded-top ${data.id > 1 ? 'mt-4' : ''}">
+                    <span>${paddedId}</span>
+                    <span class="fw-bold">${data.title}</span>
+                    <span>${data.description}</span>
+                    <span>View More</span>
+                    <button class="btn btn-dark rounded-circle px-2 py-1 toggle-btn" data-target="slider-${data.id}">+</button>
+                </div>
+                <div class="d-none bg-light slider-container" id="slider-${data.id}">
+                    <div class="d-flex justify-content-around py-3">
+                        <span>${paddedId}</span>
+                        <span class="fw-bold">${data.title}</span>
+                        <span>${data.description}</span>
+                        <span>
+                            <button class="btn btn-dark me-2" onclick="prevSlide('carousel-${data.id}')">⟨</button>
+                            <button class="btn btn-dark" onclick="nextSlide('carousel-${data.id}')">⟩</button>
+                                <a href="${data.link}" target="_blank">
+                                <button class="btn btn-dark ms-2">Live Project</button>
+                                </a>
+
+                        </span>
+                    </div>
+                    <div class="text-center">
+                        <div id="carousel-${data.id}" class="carousel slide mx-auto" data-bs-ride="false">
+                            <div class="carousel-inner">
+                                ${data.images.map((img, index) => `
+                                    <div class="carousel-item ${index === 0 ? 'active' : ''}">
+                                        <img src="${img}" class="img-fluid object-fit-cover" style="width: 95%; height: 400px;" alt="Slide ${index + 1}">
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Initialize carousels
+        document.addEventListener('DOMContentLoaded', () => {
+            const container = document.getElementById('carousels-container');
+            carouselData.forEach(data => {
+                container.innerHTML += generateCarouselHTML(data);
+            });
+
+            // Add click event listeners to all toggle buttons
+            document.querySelectorAll('.toggle-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const targetId = this.getAttribute('data-target');
+                    const sliderId = this.getAttribute('data-target').split('-')[1];
+                    const carouselId = `carousel-${sliderId}`;
+                    
+                    this.textContent = this.textContent === '+' ? '-' : '+';
+                    const sliderContainer = document.getElementById(targetId);
+                    sliderContainer.classList.toggle('d-none');
+                    sliderContainer.classList.toggle('d-block');
+
+                    if (this.textContent === '-') {
+                        if (!carouselInstances.has(carouselId)) {
+                            carouselInstances.set(
+                                carouselId, 
+                                new bootstrap.Carousel(document.getElementById(carouselId))
+                            );
+                        }
+                    }
+                });
+            });
+        });
+
+        // Navigation functions
+        function prevSlide(carouselId) {
+            const carousel = carouselInstances.get(carouselId);
+            if (carousel) {
+                carousel.prev();
+            }
+        }
+
+        function nextSlide(carouselId) {
+            const carousel = carouselInstances.get(carouselId);
+            if (carousel) {
+                carousel.next();
+            }
+        }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
